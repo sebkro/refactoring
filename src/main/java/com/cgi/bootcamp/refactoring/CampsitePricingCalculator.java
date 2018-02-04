@@ -26,9 +26,7 @@ public class CampsitePricingCalculator {
 			int availableTents = campsiteBookingManager.getTents() - bookedTents;
 			price = addLastAvailableFactor(price, availableTents);
 		}
-		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
-			price *= 1.5;
-		}
+		price = addPeakSeasonPricing(startDate, price);
 		return price;
 	}
 
@@ -51,6 +49,11 @@ public class CampsitePricingCalculator {
 			int availableCaravans = campsiteBookingManager.getCaravans() - bookedCaravans;
 			price = addLastAvailableFactor(price, availableCaravans);
 		}
+		price = addPeakSeasonPricing(startDate, price);
+		return price;
+	}
+
+	private double addPeakSeasonPricing(LocalDate startDate, double price) {
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
 			price *= 1.5;
 		}
@@ -66,9 +69,7 @@ public class CampsitePricingCalculator {
 		} else {
 			price = cabinBasePrice;
 		}
-		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
-			price *= 1.5;
-		}
+		price = addPeakSeasonPricing(startDate, price);
 		return price;
 	}
 }
