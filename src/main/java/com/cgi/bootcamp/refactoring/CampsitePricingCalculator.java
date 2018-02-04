@@ -16,56 +16,56 @@ public class CampsitePricingCalculator {
 
 	public double calcTentPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
-		double x = 0;
+		double price = 0;
 		if (campsiteBookingManager.getWeeklyBooking(startDate).getTents() >= campsiteBookingManager.getTents()) {
-			x = Double.NaN;
+			price = Double.NaN;
 		} else {
-			x = tentBasePrice;
+			price = tentBasePrice;
 			if (campsiteBookingManager.getTents()
 					- campsiteBookingManager.getWeeklyBooking(startDate).getTents() <= lastAvailableStart) {
 				double factor = 1 + ((lastAvailableStart - (campsiteBookingManager.getTents()
 						- campsiteBookingManager.getBookings().get(startDate).getTents()) + 1.0) / lastAvailableStart);
-				x = factor * x;
+				price = factor * price;
 			}
 		}
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
-			x *= 1.5;
+			price *= 1.5;
 		}
-		return x;
+		return price;
 	}
 
 	public double calcCaravanPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
-		double x = 0;
+		double price = 0;
 		if (campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() >= campsiteBookingManager.getCaravans()) {
-			x = Double.NaN;
+			price = Double.NaN;
 		} else {
-			x = caravanBasePrice;
+			price = caravanBasePrice;
 			if (campsiteBookingManager.getCaravans()
 					- campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() <= lastAvailableStart) {
 				double fuzzyFactor = 1 + ((lastAvailableStart - (campsiteBookingManager.getCaravans()
 						- campsiteBookingManager.getWeeklyBooking(startDate).getCaravans()) + 1.0)
 						/ lastAvailableStart);
-				x = fuzzyFactor * x;
+				price = fuzzyFactor * price;
 			}
 		}
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
-			x *= 1.5;
+			price *= 1.5;
 		}
-		return x;
+		return price;
 	}
 
 	public double calcCabinPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
-		double x = 0;
+		double price = 0;
 		if (campsiteBookingManager.getWeeklyBooking(startDate).getCabins() >= campsiteBookingManager.getCabins()) {
-			x = Double.NaN;
+			price = Double.NaN;
 		} else {
-			x = cabinBasePrice;
+			price = cabinBasePrice;
 		}
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
-			x *= 1.5;
+			price *= 1.5;
 		}
-		return x;
+		return price;
 	}
 }
