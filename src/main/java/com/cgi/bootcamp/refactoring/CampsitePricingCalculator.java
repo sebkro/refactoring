@@ -24,13 +24,18 @@ public class CampsitePricingCalculator {
 		} else {
 			price = tentBasePrice;
 			int availableTents = campsiteBookingManager.getTents() - bookedTents;
-			if (availableTents <= lastAvailableStart) {
-				double factor = 1 + ((lastAvailableStart - availableTents + 1.0) / lastAvailableStart);
-				price = factor * price;
-			}
+			price = addLastAvailableFactor(price, availableTents);
 		}
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
 			price *= 1.5;
+		}
+		return price;
+	}
+
+	private double addLastAvailableFactor(double price, int available) {
+		if (available <= lastAvailableStart) {
+			double factor = 1 + ((lastAvailableStart - available + 1.0) / lastAvailableStart);
+			price = factor * price;
 		}
 		return price;
 	}
@@ -44,11 +49,7 @@ public class CampsitePricingCalculator {
 		} else {
 			price = caravanBasePrice;
 			int availableCaravans = campsiteBookingManager.getCaravans() - bookedCaravans;
-			if (availableCaravans <= lastAvailableStart) {
-				double fuzzyFactor = 1 + ((lastAvailableStart - availableCaravans + 1.0)
-						/ lastAvailableStart);
-				price = fuzzyFactor * price;
-			}
+			price = addLastAvailableFactor(price, availableCaravans);
 		}
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
 			price *= 1.5;
