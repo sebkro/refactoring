@@ -9,26 +9,27 @@ public class CampsiteManagerTest {
 	
 	private CampsiteManager manager;
 	
+	private CampsitePricingCalculator pricingCalculator;
+	
 	@Before
 	public void init() {
 		manager = CampsiteManager.builder()
 				.tents(53)
 				.cabins(4)
 				.caravans(71)
-				.tentBase(21)
-				.cabinBase(210)
-				.caravanBase(150)
-				.lastAvailableStart(30).build();
+				.build();
+		
+		pricingCalculator = new CampsitePricingCalculator(21, 210, 150, 30);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void calcShouldThrowExceptionIfStartIsNotSaturday1() {
-		manager.calc(true, false, false, LocalDate.of(2017, 6, 1));
+		pricingCalculator.calc(true, false, false, LocalDate.of(2017, 6, 1), manager);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void calcShouldThrowExceptionIfStartIsNotSaturday2() {
-		manager.calc(false, true, false, LocalDate.of(2017, 7, 11));
+		pricingCalculator.calc(false, true, false, LocalDate.of(2017, 7, 11), manager);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -43,37 +44,37 @@ public class CampsiteManagerTest {
 	
 	@Test
 	public void shouldReturnNormalTentPrice() {
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 3, 25));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(manager.getTentBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBase() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnNormalCabinPrice() {
-		double result = manager.calc(false, true, false, LocalDate.of(2017, 3, 25));
+		double result = pricingCalculator.calc(false, true, false, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(manager.getCabinBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCabinBase() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnNormalCaravanPrice() {
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 3, 25));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(manager.getCaravanBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCaravanBase() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnPeakCaravanPrice() {
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 7, 22));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 7, 22), manager);
 		
-		Assert.assertEquals(manager.getCaravanBase() * 1.5, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCaravanBase() * 1.5, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnPeakTentPrice() {
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(manager.getTentBase() * 1.5, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBase() * 1.5, result, 0.1);
 	}
 
 	@Test
@@ -81,89 +82,89 @@ public class CampsiteManagerTest {
 		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - 1);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getTentBase() * 2.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBase() * 2.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnMinLastAvailableTentPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart());
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - pricingCalculator.getLastAvailableStart());
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getTentBase() * (1 + (1.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBase() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
 	public void shouldReturnLastNormalTentPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() - 1);
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - pricingCalculator.getLastAvailableStart() - 1);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getTentBase(), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBase(), result, 0.0001);
 	}
 
 	@Test
 	public void shouldReturnFuzzyLastAvailableTentPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() + 10);
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - pricingCalculator.getLastAvailableStart() + 10);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getTentBase() * (1 + (11.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 		
 	@Test
 	public void shouldReturnPeakAndFuzzyLastAvailableTentPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() + 10);
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - pricingCalculator.getLastAvailableStart() + 10);
 		manager.getBookings().put(LocalDate.of(2017, 8, 19), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(1.5 * manager.getTentBase() * (1 + (11.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(1.5 * pricingCalculator.getTentBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 	
 	@Test
 	public void shouldReturnMinLastAvailableCaravanPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart(), 0);
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - pricingCalculator.getLastAvailableStart(), 0);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getCaravanBase() * (1 + (1.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBase() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 	
 	@Test
 	public void shouldReturnLastNormalCaravanPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() - 1, 0);
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - pricingCalculator.getLastAvailableStart() - 1, 0);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getCaravanBase(), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBase(), result, 0.0001);
 	}
 	
 	@Test
 	public void shouldReturnFuzzyLastAvailableCaravanPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0);
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - pricingCalculator.getLastAvailableStart() + 10, 0);
 		manager.getBookings().put(LocalDate.of(2017, 11, 11), bookings);
 		
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(manager.getCaravanBase() * (1 + (11.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
 	public void shouldReturnPeakAndFuzzyLastAvailableCaravanPrice() {
-		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0);
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - pricingCalculator.getLastAvailableStart() + 10, 0);
 		manager.getBookings().put(LocalDate.of(2017, 8, 19), bookings);
 		
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(1.5 * manager.getCaravanBase() * (1 + (11.0  / manager.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(1.5 * pricingCalculator.getCaravanBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
@@ -171,7 +172,7 @@ public class CampsiteManagerTest {
 		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans(), 0);
 		manager.getBookings().put(LocalDate.of(2017, 8, 19), bookings);
 		
-		double result = manager.calc(false, false, true, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 8, 19), manager);
 		
 		Assert.assertEquals(Double.NaN, result, 0.0001);
 	}
@@ -181,7 +182,7 @@ public class CampsiteManagerTest {
 		WeeklyBooking bookings = new WeeklyBooking(manager.getCabins(), 0, 0);
 		manager.getBookings().put(LocalDate.of(2017, 8, 19), bookings);
 		
-		double result = manager.calc(false, true, false, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(false, true, false, LocalDate.of(2017, 8, 19), manager);
 		
 		Assert.assertEquals(Double.NaN, result, 0.0001);
 	}
@@ -191,7 +192,7 @@ public class CampsiteManagerTest {
 		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents());
 		manager.getBookings().put(LocalDate.of(2017, 8, 19), bookings);
 		
-		double result = manager.calc(true, false, false, LocalDate.of(2017, 8, 19));
+		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 8, 19), manager);
 		
 		Assert.assertEquals(Double.NaN, result, 0.0001);
 	}
