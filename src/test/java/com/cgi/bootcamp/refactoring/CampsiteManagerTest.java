@@ -7,13 +7,13 @@ import org.junit.Test;
 	
 public class CampsiteManagerTest {
 	
-	private CampsiteManager manager;
+	private CampsiteBookingManager manager;
 	
 	private CampsitePricingCalculator pricingCalculator;
 	
 	@Before
 	public void init() {
-		manager = CampsiteManager.builder()
+		manager = CampsiteBookingManager.builder()
 				.tents(53)
 				.cabins(4)
 				.caravans(71)

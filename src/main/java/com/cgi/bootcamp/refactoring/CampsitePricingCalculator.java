@@ -14,7 +14,7 @@ public class CampsitePricingCalculator {
 	private int caravanBasePrice;
 	private int lastAvailableStart;
 	
-	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate startDate, CampsiteManager campsiteManager) {
+	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate startDate, CampsiteBookingManager campsiteManager) {
 		campsiteManager.checkStartDay(startDate);
 		double x = 0;
 		if (tent) {

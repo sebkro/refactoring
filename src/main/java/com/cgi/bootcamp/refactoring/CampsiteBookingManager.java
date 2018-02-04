@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CampsiteManager {
+public class CampsiteBookingManager {
 	
 	private int tents;
 	private int cabins;
