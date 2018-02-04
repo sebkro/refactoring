@@ -42,7 +42,7 @@ public class CampsiteManager {
 			weekBookings.addCaravan();
 			getBookings().put(startDate, weekBookings);
 		} else if (cabin) {
-			if (weekBookings.getCabins() >= cabins) {
+			if (weekBookings.getCabins() >= getCabins()) {
 				throw new IllegalArgumentException("no cabins available");
 			}
 			weekBookings.addCabin();
@@ -80,7 +80,7 @@ public class CampsiteManager {
 				}
 			}
 		} else {
-			if (getBookings().get(startDate) != null && getBookings().get(startDate).getCabins() >= cabins) {
+			if (getBookings().get(startDate) != null && getBookings().get(startDate).getCabins() >= getCabins()) {
 				x = Double.NaN;
 			} else {
 				x = getCabinBase();
@@ -95,6 +95,10 @@ public class CampsiteManager {
 
 	public void setBookings(Map<LocalDate, WeeklyBooking> bookings) {
 		this.bookings = bookings;
+	}
+
+	private void setCabins(int cabins) {
+		this.cabins = cabins;
 	}
 
 }
