@@ -44,6 +44,11 @@ public class CampsiteBookingManager {
 			getBookings().put(startDate, weekBookings);
 		}
 	}
+	
+	public WeeklyBooking getWeeklyBooking(LocalDate startDate) {
+		checkStartDay(startDate);
+		return bookings.getOrDefault(startDate, new WeeklyBooking());
+	}
 
 	public void checkStartDay(LocalDate startDate) {
 		if (startDate.getDayOfWeek() != DayOfWeek.SATURDAY) {

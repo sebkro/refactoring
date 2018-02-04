@@ -18,27 +18,27 @@ public class CampsitePricingCalculator {
 		campsiteBookingManager.checkStartDay(startDate);
 		double x = 0;
 		if (tent) {
-			if (campsiteBookingManager.getBookings().get(startDate) != null && campsiteBookingManager.getBookings().get(startDate).getTents() >= campsiteBookingManager.getTents()) {
+			if (campsiteBookingManager.getWeeklyBooking(startDate).getTents() >= campsiteBookingManager.getTents()) {
 				x = Double.NaN;
 			} else {
 				x = tentBasePrice;
-				if (campsiteBookingManager.getBookings().get(startDate) != null && campsiteBookingManager.getTents() - campsiteBookingManager.getBookings().get(startDate).getTents() <= lastAvailableStart) {
+				if (campsiteBookingManager.getTents() - campsiteBookingManager.getWeeklyBooking(startDate).getTents() <= lastAvailableStart) {
 					double factor = 1 + ((lastAvailableStart - (campsiteBookingManager.getTents() - campsiteBookingManager.getBookings().get(startDate).getTents()) + 1.0) / lastAvailableStart);
 					x = factor * x;
 				}
 			}
 		} else if (caravan) {
-			if (campsiteBookingManager.getBookings().get(startDate) != null && campsiteBookingManager.getBookings().get(startDate).getCaravans() >= campsiteBookingManager.getCaravans()) {
+			if (campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() >= campsiteBookingManager.getCaravans()) {
 				x = Double.NaN;
 			} else {
 				x = caravanBasePrice;
-				if (campsiteBookingManager.getBookings().get(startDate) != null && campsiteBookingManager.getCaravans() - campsiteBookingManager.getBookings().get(startDate).getCaravans() <= lastAvailableStart) {
-					double fuzzyFactor = 1 + ((lastAvailableStart - (campsiteBookingManager.getCaravans() - campsiteBookingManager.getBookings().get(startDate).getCaravans()) + 1.0) / lastAvailableStart);
+				if (campsiteBookingManager.getCaravans() -campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() <= lastAvailableStart) {
+					double fuzzyFactor = 1 + ((lastAvailableStart - (campsiteBookingManager.getCaravans() - campsiteBookingManager.getWeeklyBooking(startDate).getCaravans()) + 1.0) / lastAvailableStart);
 					x = fuzzyFactor * x;
 				}
 			}
 		} else {
-			if (campsiteBookingManager.getBookings().get(startDate) != null && campsiteBookingManager.getBookings().get(startDate).getCabins() >= campsiteBookingManager.getCabins()) {
+			if (campsiteBookingManager.getWeeklyBooking(startDate).getCabins() >= campsiteBookingManager.getCabins()) {
 				x = Double.NaN;
 			} else {
 				x = cabinBasePrice;
