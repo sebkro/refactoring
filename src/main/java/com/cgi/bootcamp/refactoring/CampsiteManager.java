@@ -2,21 +2,27 @@ package com.cgi.bootcamp.refactoring;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
 public class CampsiteManager {
 	
-	public int tents;
-	public int cabins;
-	public int caravans;
+	private int tents;
+	private int cabins;
+	private int caravans;
 	
-	public int tentBase;
-	public int cabinBase;
-	public int caravanBase;
+	private int tentBase;
+	private int cabinBase;
+	private int caravanBase;
 	
-	public int lastAvailableStart;
+	private int lastAvailableStart;
 	
-	public Map<LocalDate, int[]> bookings;
+	@Builder.Default public Map<LocalDate, int[]> bookings = new HashMap<>();
 	
 	
 	public void book (boolean tent, boolean cabin, boolean caravan, LocalDate d) {
