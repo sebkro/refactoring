@@ -45,6 +45,18 @@ public class CampsiteBookingManager {
 		}
 	}
 	
+	public int getBookedTents(LocalDate startDate) {
+		return getWeeklyBooking(startDate).getTents();
+	}
+
+	public int getBookedCaravans(LocalDate startDate) {
+		return getWeeklyBooking(startDate).getCaravans();
+	}
+
+	public int getBookedCabins(LocalDate startDate) {
+		return getWeeklyBooking(startDate).getCabins();
+	}
+	
 	public WeeklyBooking getWeeklyBooking(LocalDate startDate) {
 		checkStartDay(startDate);
 		return bookings.getOrDefault(startDate, new WeeklyBooking());
