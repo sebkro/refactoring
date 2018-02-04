@@ -1,6 +1,7 @@
 package com.cgi.bootcamp.refactoring;
 
 import java.time.LocalDate;
+import java.util.function.Supplier;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,18 +17,45 @@ public class CampsitePricingCalculator {
 
 	public double calcTentPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
-		double price = 0;
 		int bookedTents = campsiteBookingManager.getBookedTents(startDate);
-
-		if (bookedTents >= campsiteBookingManager.getTents()) {
-			price = Double.NaN;
-		} else {
-			price = tentBasePrice;
-			int availableTents = campsiteBookingManager.getTents() - bookedTents;
+		int availableTents = campsiteBookingManager.getTents() - bookedTents;
+		
+		return withAvailabilityCheck(availableTents, () -> {
+			double price = tentBasePrice;
 			price = addLastAvailableFactor(price, availableTents);
+			return addPeakSeasonPricing(startDate, price);
+		});
+	}
+	
+	public double calcCaravanPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
+		campsiteBookingManager.checkStartDay(startDate);
+		int bookedCaravans = campsiteBookingManager.getBookedCaravans(startDate);
+		int availableCaravans = campsiteBookingManager.getCaravans() - bookedCaravans;
+		
+		return withAvailabilityCheck(availableCaravans, () -> {
+			double price = caravanBasePrice;
+			price = addLastAvailableFactor(price, availableCaravans);
+			return addPeakSeasonPricing(startDate, price);
+		});
+	}
+
+	public double calcCabinPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
+		campsiteBookingManager.checkStartDay(startDate);
+		int bookedCabins = campsiteBookingManager.getBookedCabins(startDate);
+		int availableCabins = campsiteBookingManager.getCabins() - bookedCabins;
+		
+		return withAvailabilityCheck(availableCabins, () -> {
+			double price = cabinBasePrice;
+			return addPeakSeasonPricing(startDate, price);
+		});
+	}
+	
+	private double withAvailabilityCheck(int available, Supplier<Double> priceCalculation) {
+		if (available > 0) {
+			return priceCalculation.get();
+		} else {
+			return Double.NaN;
 		}
-		price = addPeakSeasonPricing(startDate, price);
-		return price;
 	}
 
 	private double addLastAvailableFactor(double price, int available) {
@@ -37,22 +65,7 @@ public class CampsitePricingCalculator {
 		}
 		return price;
 	}
-
-	public double calcCaravanPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
-		campsiteBookingManager.checkStartDay(startDate);
-		double price = 0;
-		int bookedCaravans = campsiteBookingManager.getBookedCaravans(startDate);
-		if (bookedCaravans >= campsiteBookingManager.getCaravans()) {
-			price = Double.NaN;
-		} else {
-			price = caravanBasePrice;
-			int availableCaravans = campsiteBookingManager.getCaravans() - bookedCaravans;
-			price = addLastAvailableFactor(price, availableCaravans);
-		}
-		price = addPeakSeasonPricing(startDate, price);
-		return price;
-	}
-
+	
 	private double addPeakSeasonPricing(LocalDate startDate, double price) {
 		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
 			price *= 1.5;
@@ -60,16 +73,4 @@ public class CampsitePricingCalculator {
 		return price;
 	}
 
-	public double calcCabinPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
-		campsiteBookingManager.checkStartDay(startDate);
-		double price = 0;
-		int bookedCabins = campsiteBookingManager.getBookedCabins(startDate);
-		if (bookedCabins >= campsiteBookingManager.getCabins()) {
-			price = Double.NaN;
-		} else {
-			price = cabinBasePrice;
-		}
-		price = addPeakSeasonPricing(startDate, price);
-		return price;
-	}
 }
