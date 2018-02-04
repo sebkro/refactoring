@@ -78,7 +78,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnMaxLastAvailableTentPrice() {
-		int[] bookings = {0, 0, manager.getTents() - 1};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - 1);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
@@ -88,7 +88,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnMinLastAvailableTentPrice() {
-		int[] bookings = {0, 0, manager.getTents() - manager.getLastAvailableStart()};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart());
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
@@ -98,7 +98,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnLastNormalTentPrice() {
-		int[] bookings = {0, 0, manager.getTents() - manager.getLastAvailableStart() - 1};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() - 1);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
@@ -108,7 +108,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnFuzzyLastAvailableTentPrice() {
-		int[] bookings = {0, 0, manager.getTents() - manager.getLastAvailableStart() + 10};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() + 10);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 11, 11));
@@ -118,7 +118,7 @@ public class CampsiteManagerTest {
 		
 	@Test
 	public void shouldReturnPeakAndFuzzyLastAvailableTentPrice() {
-		int[] bookings = {0, 0, manager.getTents() - manager.getLastAvailableStart() + 10};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents() - manager.getLastAvailableStart() + 10);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 8, 19));
@@ -128,7 +128,7 @@ public class CampsiteManagerTest {
 	
 	@Test
 	public void shouldReturnMinLastAvailableCaravanPrice() {
-		int[] bookings = {0, manager.getCaravans() - manager.getLastAvailableStart(), 0};
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart(), 0);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
@@ -138,7 +138,7 @@ public class CampsiteManagerTest {
 	
 	@Test
 	public void shouldReturnLastNormalCaravanPrice() {
-		int[] bookings = {0, manager.getCaravans() - manager.getLastAvailableStart() - 1, 0};
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() - 1, 0);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
@@ -148,7 +148,7 @@ public class CampsiteManagerTest {
 	
 	@Test
 	public void shouldReturnFuzzyLastAvailableCaravanPrice() {
-		int[] bookings = {0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0};
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0);
 		manager.bookings.put(LocalDate.of(2017, 11, 11), bookings);
 		
 		double result = manager.calc(false, false, true, LocalDate.of(2017, 11, 11));
@@ -158,7 +158,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnPeakAndFuzzyLastAvailableCaravanPrice() {
-		int[] bookings = {0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0};
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans() - manager.getLastAvailableStart() + 10, 0);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		double result = manager.calc(false, false, true, LocalDate.of(2017, 8, 19));
@@ -168,7 +168,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnNaNPriceIfNoFreeCaravansAvailable() {
-		int[] bookings = {0, manager.getCaravans(), 0};
+		WeeklyBooking bookings = new WeeklyBooking(0, manager.getCaravans(), 0);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		double result = manager.calc(false, false, true, LocalDate.of(2017, 8, 19));
@@ -178,7 +178,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnNaNPriceIfNoFreeCabinsAvailable() {
-		int[] bookings = {manager.getCabins(), 0, 0};
+		WeeklyBooking bookings = new WeeklyBooking(manager.getCabins(), 0, 0);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		double result = manager.calc(false, true, false, LocalDate.of(2017, 8, 19));
@@ -188,7 +188,7 @@ public class CampsiteManagerTest {
 
 	@Test
 	public void shouldReturnNaNPriceIfNoFreeTentsAvailable() {
-		int[] bookings = {0, 0, manager.getTents()};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, manager.getTents());
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		double result = manager.calc(true, false, false, LocalDate.of(2017, 8, 19));
@@ -198,35 +198,35 @@ public class CampsiteManagerTest {
 	
 	@Test
 	public void shouldBookTent() {
-		int[] bookings = {0, 0, 4};
+		WeeklyBooking bookings = new WeeklyBooking(0, 0, 4);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		manager.book(true, false, false, LocalDate.of(2017, 8, 19));
 
-		int[] expected = {0, 0, 5};
-		Assert.assertArrayEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
+		WeeklyBooking expected = new WeeklyBooking(0, 0, 5);
+		Assert.assertEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
 	}
 
 	@Test
 	public void shouldBookCaravan() {
-		int[] bookings = {0, 42, 4};
+		WeeklyBooking bookings = new WeeklyBooking(0, 42, 4);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		manager.book(false, false, true, LocalDate.of(2017, 8, 19));
 		
-		int[] expected = {0, 43, 4};
-		Assert.assertArrayEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
+		WeeklyBooking expected = new WeeklyBooking(0, 43, 4);
+		Assert.assertEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
 	}
 
 	@Test
 	public void shouldBookCabin() {
-		int[] bookings = {1, 42, 4};
+		WeeklyBooking bookings = new WeeklyBooking(1, 42, 4);
 		manager.bookings.put(LocalDate.of(2017, 8, 19), bookings);
 		
 		manager.book(false, true, false, LocalDate.of(2017, 8, 19));
 		
-		int[] expected = {2, 42, 4};
-		Assert.assertArrayEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
+		WeeklyBooking expected = new WeeklyBooking(2, 42, 4);
+		Assert.assertEquals(expected, manager.bookings.get(LocalDate.of(2017, 8, 19)));
 	}
 
 }
