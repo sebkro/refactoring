@@ -17,12 +17,13 @@ public class CampsitePricingCalculator {
 	public double calcTentPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
 		double price = 0;
-		if (campsiteBookingManager.getWeeklyBooking(startDate).getTents() >= campsiteBookingManager.getTents()) {
+		int bookedTents = campsiteBookingManager.getWeeklyBooking(startDate).getTents();
+		if (bookedTents >= campsiteBookingManager.getTents()) {
 			price = Double.NaN;
 		} else {
 			price = tentBasePrice;
-			if (campsiteBookingManager.getTents()
-					- campsiteBookingManager.getWeeklyBooking(startDate).getTents() <= lastAvailableStart) {
+			int availableTents = campsiteBookingManager.getTents() - bookedTents;
+			if (availableTents <= lastAvailableStart) {
 				double factor = 1 + ((lastAvailableStart - (campsiteBookingManager.getTents()
 						- campsiteBookingManager.getBookings().get(startDate).getTents()) + 1.0) / lastAvailableStart);
 				price = factor * price;
@@ -37,14 +38,14 @@ public class CampsitePricingCalculator {
 	public double calcCaravanPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
 		double price = 0;
-		if (campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() >= campsiteBookingManager.getCaravans()) {
+		int bookedCaravans = campsiteBookingManager.getWeeklyBooking(startDate).getCaravans();
+		if (bookedCaravans >= campsiteBookingManager.getCaravans()) {
 			price = Double.NaN;
 		} else {
 			price = caravanBasePrice;
-			if (campsiteBookingManager.getCaravans()
-					- campsiteBookingManager.getWeeklyBooking(startDate).getCaravans() <= lastAvailableStart) {
-				double fuzzyFactor = 1 + ((lastAvailableStart - (campsiteBookingManager.getCaravans()
-						- campsiteBookingManager.getWeeklyBooking(startDate).getCaravans()) + 1.0)
+			int availableCaravans = campsiteBookingManager.getCaravans() - bookedCaravans;
+			if (availableCaravans <= lastAvailableStart) {
+				double fuzzyFactor = 1 + ((lastAvailableStart - availableCaravans + 1.0)
 						/ lastAvailableStart);
 				price = fuzzyFactor * price;
 			}
@@ -58,7 +59,8 @@ public class CampsitePricingCalculator {
 	public double calcCabinPrice(LocalDate startDate, CampsiteBookingManager campsiteBookingManager) {
 		campsiteBookingManager.checkStartDay(startDate);
 		double price = 0;
-		if (campsiteBookingManager.getWeeklyBooking(startDate).getCabins() >= campsiteBookingManager.getCabins()) {
+		int bookedCabins = campsiteBookingManager.getWeeklyBooking(startDate).getCabins();
+		if (bookedCabins >= campsiteBookingManager.getCabins()) {
 			price = Double.NaN;
 		} else {
 			price = cabinBasePrice;
