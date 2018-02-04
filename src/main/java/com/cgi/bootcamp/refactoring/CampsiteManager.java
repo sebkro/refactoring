@@ -26,9 +26,7 @@ public class CampsiteManager {
 	
 	
 	public void book (boolean tent, boolean cabin, boolean caravan, LocalDate startDate) {
-		if (startDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
-			throw new IllegalArgumentException("start is not a saturday");
-		}
+		checkStartDay(startDate);
 		int[] defaultVal = {0, 0, 0};
 		int[] weekBookings = bookings.getOrDefault(startDate, defaultVal);
 		if (tent) {
@@ -51,11 +49,15 @@ public class CampsiteManager {
 			bookings.put(startDate, weekBookings);
 		}
 	}
-	
-	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate startDate) {
+
+	private void checkStartDay(LocalDate startDate) {
 		if (startDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
 			throw new IllegalArgumentException("start is not a saturday");
 		}
+	}
+	
+	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate startDate) {
+		checkStartDay(startDate);
 		double x = 0;
 		if (tent) {
 			if (bookings.get(startDate) != null && bookings.get(startDate)[2] >= tents) {
