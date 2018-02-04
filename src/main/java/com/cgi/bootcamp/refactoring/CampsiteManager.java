@@ -25,67 +25,67 @@ public class CampsiteManager {
 	@Builder.Default public Map<LocalDate, int[]> bookings = new HashMap<>();
 	
 	
-	public void book (boolean tent, boolean cabin, boolean caravan, LocalDate d) {
-		if (d.getDayOfWeek() != DayOfWeek.SATURDAY) {
+	public void book (boolean tent, boolean cabin, boolean caravan, LocalDate startDate) {
+		if (startDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
 			throw new IllegalArgumentException("start is not a saturday");
 		}
-		int[] def = {0, 0, 0};
-		int[] act = bookings.getOrDefault(d, def);
+		int[] defaultVal = {0, 0, 0};
+		int[] weekBookings = bookings.getOrDefault(startDate, defaultVal);
 		if (tent) {
-			if (act[2] >= tents) {
+			if (weekBookings[2] >= tents) {
 				throw new IllegalArgumentException("no tents available");
 			}
-			act[2] = act[2] + 1;
-			bookings.put(d, act);
+			weekBookings[2] = weekBookings[2] + 1;
+			bookings.put(startDate, weekBookings);
 		} else if (caravan) {
-			if (act[1] >= caravans) {
+			if (weekBookings[1] >= caravans) {
 				throw new IllegalArgumentException("no caravans available");
 			}
-			act[1] = act[1] + 1;
-			bookings.put(d, act);
+			weekBookings[1] = weekBookings[1] + 1;
+			bookings.put(startDate, weekBookings);
 		} else if (cabin) {
-			if (act[0] >= cabins) {
+			if (weekBookings[0] >= cabins) {
 				throw new IllegalArgumentException("no cabins available");
 			}
-			act[0] = act[0] + 1;
-			bookings.put(d, act);
+			weekBookings[0] = weekBookings[0] + 1;
+			bookings.put(startDate, weekBookings);
 		}
 	}
 	
-	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate date) {
-		if (date.getDayOfWeek() != DayOfWeek.SATURDAY) {
+	public double calc(boolean tent, boolean cabin, boolean caravan, LocalDate startDate) {
+		if (startDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
 			throw new IllegalArgumentException("start is not a saturday");
 		}
 		double x = 0;
 		if (tent) {
-			if (bookings.get(date) != null && bookings.get(date)[2] >= tents) {
+			if (bookings.get(startDate) != null && bookings.get(startDate)[2] >= tents) {
 				x = Double.NaN;
 			} else {
 				x = tentBase;
-				if (bookings.get(date) != null && tents - bookings.get(date)[2] <= lastAvailableStart) {
-					double factor = 1 + ((lastAvailableStart - (tents - bookings.get(date)[2]) + 1.0) / lastAvailableStart);
+				if (bookings.get(startDate) != null && tents - bookings.get(startDate)[2] <= lastAvailableStart) {
+					double factor = 1 + ((lastAvailableStart - (tents - bookings.get(startDate)[2]) + 1.0) / lastAvailableStart);
 					x = factor * x;
 				}
 			}
 		} else if (caravan) {
-			if (bookings.get(date) != null && bookings.get(date)[1] >= caravans) {
+			if (bookings.get(startDate) != null && bookings.get(startDate)[1] >= caravans) {
 				x = Double.NaN;
 			} else {
 				x = caravanBase;
-				if (bookings.get(date) != null && caravans - bookings.get(date)[1] <= lastAvailableStart) {
-					double fuzzyFactor = 1 + ((lastAvailableStart - (caravans - bookings.get(date)[1]) + 1.0) / lastAvailableStart);
+				if (bookings.get(startDate) != null && caravans - bookings.get(startDate)[1] <= lastAvailableStart) {
+					double fuzzyFactor = 1 + ((lastAvailableStart - (caravans - bookings.get(startDate)[1]) + 1.0) / lastAvailableStart);
 					x = fuzzyFactor * x;
 				}
 			}
 		} else {
-			if (bookings.get(date) != null && bookings.get(date)[0] >= cabins) {
+			if (bookings.get(startDate) != null && bookings.get(startDate)[0] >= cabins) {
 				x = Double.NaN;
 			} else {
 				x = cabinBase;
 			}
 		}
 		 
-		if (date.getMonthValue() >= 5 && date.getMonthValue() <= 8) {
+		if (startDate.getMonthValue() >= 5 && startDate.getMonthValue() <= 8) {
 			x *= 1.5;
 		}
 		return x;

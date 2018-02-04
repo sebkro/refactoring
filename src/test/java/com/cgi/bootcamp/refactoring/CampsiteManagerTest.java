@@ -1,11 +1,10 @@
 package com.cgi.bootcamp.refactoring;
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+	
 public class CampsiteManagerTest {
 	
 	private CampsiteManager manager;
