@@ -46,35 +46,35 @@ public class CampsiteManagerTest {
 	public void shouldReturnNormalTentPrice() {
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnNormalCabinPrice() {
 		double result = pricingCalculator.calc(false, true, false, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCabinBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCabinBasePrice() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnNormalCaravanPrice() {
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 3, 25), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCaravanBase() * 1.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCaravanBasePrice() * 1.0, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnPeakCaravanPrice() {
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 7, 22), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCaravanBase() * 1.5, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getCaravanBasePrice() * 1.5, result, 0.1);
 	}
 
 	@Test
 	public void shouldReturnPeakTentPrice() {
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase() * 1.5, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice() * 1.5, result, 0.1);
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase() * 2.0, result, 0.1);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice() * 2.0, result, 0.1);
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase(), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice(), result, 0.0001);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getTentBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getTentBasePrice() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 		
 	@Test
@@ -124,7 +124,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(true, false, false, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(1.5 * pricingCalculator.getTentBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(1.5 * pricingCalculator.getTentBasePrice() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 	
 	@Test
@@ -134,7 +134,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCaravanBase() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBasePrice() * (1 + (1.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCaravanBase(), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBasePrice(), result, 0.0001);
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 11, 11), manager);
 		
-		Assert.assertEquals(pricingCalculator.getCaravanBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(pricingCalculator.getCaravanBasePrice() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class CampsiteManagerTest {
 		
 		double result = pricingCalculator.calc(false, false, true, LocalDate.of(2017, 8, 19), manager);
 		
-		Assert.assertEquals(1.5 * pricingCalculator.getCaravanBase() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
+		Assert.assertEquals(1.5 * pricingCalculator.getCaravanBasePrice() * (1 + (11.0  / pricingCalculator.getLastAvailableStart())), result, 0.0001);
 	}
 
 	@Test
